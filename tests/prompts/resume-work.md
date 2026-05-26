@@ -1,18 +1,15 @@
 # Prompt
 
-Continue the unfinished task from the task index and pick up at the next unchecked step.
+Continue the unfinished task in `tasks/2026/05/T-20260526-001-orders-export`.
 
 # Expected Skills
 
-- `coding-workflow`
-- `task-tracking`
-- `git-safety`
-- `verification-before-done`
+- `codex-plan-task-workflow`
 
 # Should Not Trigger By Default
 
-- `workspace-bootstrap`
+- No separate child skills.
 
 # Expected Behavior
 
-Codex should inspect `tasks/_index.md`, reuse the matching unfinished task package, and avoid creating a duplicate task.
+Codex should locate the existing task package, read `task.md`, `tasks.md`, and `result.md`, summarize current state, then continue from the next incomplete step.

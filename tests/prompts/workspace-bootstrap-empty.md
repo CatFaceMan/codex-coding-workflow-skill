@@ -4,14 +4,11 @@ This is an empty repository. Initialize the smallest useful Codex workspace stru
 
 # Expected Skills
 
-- `coding-workflow`
-- `workspace-bootstrap`
-- `task-tracking`
-- `verification-before-done`
+- `codex-plan-task-workflow`
 
 # Should Not Trigger By Default
 
-- `git-safety` only applies if Git is available and files will be edited.
+- No separate child skills.
 
 # Expected Behavior
 

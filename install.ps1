@@ -1,5 +1,5 @@
 param(
-    [string]$DestinationRoot = "$env:USERPROFILE\.codex\skills",
+    [string]$DestinationRoot = "$env:USERPROFILE\.agents\skills",
     [string]$Destination = ""
 )
 
@@ -7,12 +7,13 @@ $ErrorActionPreference = "Stop"
 
 $repoRoot = Split-Path -Parent $MyInvocation.MyCommand.Path
 $source = Join-Path $repoRoot "codex-coding-workflow"
+$skillName = "codex-plan-task-workflow"
 
 if ($Destination -ne "") {
     $rootDestination = $Destination
     $DestinationRoot = Split-Path -Parent $Destination
 } else {
-    $rootDestination = Join-Path $DestinationRoot "codex-coding-workflow"
+    $rootDestination = Join-Path $DestinationRoot $skillName
 }
 
 if (-not (Test-Path -LiteralPath (Join-Path $source "SKILL.md"))) {
@@ -27,16 +28,4 @@ if (Test-Path -LiteralPath $rootDestination) {
 
 Copy-Item -LiteralPath $source -Destination $rootDestination -Recurse -Force
 
-$skillsSource = Join-Path $source "skills"
-if (Test-Path -LiteralPath $skillsSource) {
-    Get-ChildItem -LiteralPath $skillsSource -Directory | ForEach-Object {
-        $target = Join-Path $DestinationRoot $_.Name
-        if (Test-Path -LiteralPath $target) {
-            Remove-Item -LiteralPath $target -Recurse -Force
-        }
-        Copy-Item -LiteralPath $_.FullName -Destination $target -Recurse -Force
-    }
-}
-
-Write-Host "已安装根入口到：$rootDestination"
-Write-Host "已安装子 skills 到：$DestinationRoot"
+Write-Host "已安装 skill 到：$rootDestination"

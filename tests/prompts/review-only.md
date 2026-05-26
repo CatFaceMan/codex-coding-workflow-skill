@@ -4,13 +4,11 @@ Review this implementation plan and tell me the main risks. Do not change files.
 
 # Expected Skills
 
-- `coding-workflow`
+- None by default.
 
 # Should Not Trigger By Default
 
-- `task-tracking`
-- `git-safety`
-- `workspace-bootstrap`
+- `codex-plan-task-workflow`
 
 # Expected Behavior
 

@@ -4,13 +4,12 @@ Is this done? If it is ready, summarize what changed and what passed.
 
 # Expected Skills
 
-- `coding-workflow`
-- `verification-before-done`
+- `codex-plan-task-workflow`
 
 # Should Not Trigger By Default
 
-- `workspace-bootstrap`
+- No separate child skills.
 
 # Expected Behavior
 
-Codex should not claim completion unless verification evidence exists. If verification has not run, it should run the relevant check or report the gap.
+Codex should inspect the current task state and should not claim completion unless verification evidence exists. If verification has not run, it should run the relevant check or report the gap.

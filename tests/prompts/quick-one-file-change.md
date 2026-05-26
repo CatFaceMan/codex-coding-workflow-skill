@@ -1,18 +1,15 @@
 # Prompt
 
-Change the default timeout constant from 30 seconds to 45 seconds. This should be a one-file low-risk edit.
+Rename this button label from "Submit" to "Save" in the settings page.
 
 # Expected Skills
 
-- `coding-workflow`
-- `task-tracking`
-- `git-safety`
-- `verification-before-done`
+- `codex-plan-task-workflow`
 
 # Should Not Trigger By Default
 
-- `workspace-bootstrap`
+- No separate child skills.
 
 # Expected Behavior
 
-Codex should use the `quick` profile, keep task records short if tracking exists, avoid broad refactors, and run the smallest relevant verification.
+Codex should keep the task record short, edit only the relevant file, and verify with the smallest meaningful check.

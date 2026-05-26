@@ -1,7 +1,7 @@
 interface:
-  display_name: "Codex Coding Workflow"
-  short_description: "Lightweight Codex-first workflow for traceable coding tasks"
-  default_prompt: "Use $codex-coding-workflow to classify this coding request, keep the workflow lightweight, protect existing changes, track task progress when needed, and verify before completion."
+  display_name: "Codex Plan Task Workflow"
+  short_description: "Plan-to-tasks workflow for Codex implementation turns"
+  default_prompt: "Use $codex-plan-task-workflow before implementing or applying a coding plan. Create or reuse tasks/..., write plan.md and tasks.md before editing, execute the checklist, verify, and record learning candidates in result.md."
 
 policy:
   allow_implicit_invocation: true

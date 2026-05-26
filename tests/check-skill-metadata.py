@@ -8,7 +8,7 @@ import sys
 
 ROOT = Path(__file__).resolve().parents[1]
 SKILL_ROOT = ROOT / "codex-coding-workflow"
-MAX_DESCRIPTION_LENGTH = 300
+MAX_DESCRIPTION_LENGTH = 420
 NAME_RE = re.compile(r"^[a-z0-9-]+$")
 
 

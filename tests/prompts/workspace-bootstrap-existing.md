@@ -4,15 +4,11 @@ This project already has source code, but no AGENTS.md or task tracking. Add the
 
 # Expected Skills
 
-- `coding-workflow`
-- `workspace-bootstrap`
-- `task-tracking`
-- `git-safety`
-- `verification-before-done`
+- `codex-plan-task-workflow`
 
 # Should Not Trigger By Default
 
-- None
+- No separate child skills.
 
 # Expected Behavior
 

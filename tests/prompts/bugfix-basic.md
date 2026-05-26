@@ -4,15 +4,12 @@ The login endpoint returns 500 after the last refactor. Please find the root cau
 
 # Expected Skills
 
-- `coding-workflow`
-- `task-tracking`
-- `git-safety`
-- `verification-before-done`
+- `codex-plan-task-workflow`
 
 # Should Not Trigger By Default
 
-- `workspace-bootstrap`
+- No separate child skills.
 
 # Expected Behavior
 
-Codex should classify this as `bugfix_task`, check Git status before editing, create or reuse a task package, implement a scoped fix, and verify the relevant backend check if available.
+Codex should check Git status before editing, create or reuse a task package, write executable items in `tasks.md`, implement a scoped fix, and verify the relevant backend check if available.

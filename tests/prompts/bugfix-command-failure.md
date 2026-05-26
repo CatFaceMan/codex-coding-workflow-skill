@@ -4,15 +4,12 @@
 
 # Expected Skills
 
-- `coding-workflow`
-- `task-tracking`
-- `git-safety`
-- `verification-before-done`
+- `codex-plan-task-workflow`
 
 # Should Not Trigger By Default
 
-- `workspace-bootstrap`
+- No separate child skills.
 
 # Expected Behavior
 
-Codex should classify this as `bugfix_task`, preserve unrelated user changes, avoid broad refactors, and report the exact test command/result.
+Codex should check Git status before editing, create or reuse a task package, preserve unrelated user changes, avoid broad refactors, and report the exact test command/result.
