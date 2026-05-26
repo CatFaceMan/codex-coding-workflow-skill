@@ -1,0 +1,14 @@
+.DS_Store
+Thumbs.db
+
+# Editor
+.idea/
+.vscode/
+
+# OS / temp
+*.tmp
+*.log
+
+# Codex/local runtime output
+.codex/
+.agents/
