@@ -1,7 +1,7 @@
 interface:
   display_name: "Codex Coding Workflow"
-  short_description: "Traceable workflow for Codex coding tasks"
-  default_prompt: "Use $codex-coding-workflow to initialize a coding workspace and complete the requested change with task tracking."
+  short_description: "Lightweight Codex-first workflow for traceable coding tasks"
+  default_prompt: "Use $codex-coding-workflow to classify this coding request, keep the workflow lightweight, protect existing changes, track task progress when needed, and verify before completion."
 
 policy:
   allow_implicit_invocation: true

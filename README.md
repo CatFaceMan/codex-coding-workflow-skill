@@ -1,23 +1,32 @@
 # Codex Coding Workflow Skill
 
-一个面向 Codex 编码任务的 workflow skill，帮助 Codex 在项目初始化、任务拆解、实现、验证和结果记录之间保持可追踪、可恢复、低侵入。
+一个面向 Codex 的轻量 coding workflow skill 包，帮助 Codex 在编码任务中保持低侵入、可追踪、可恢复，并在完成前进行合理验证。
+
+它不是 superpowers 的完整复刻：不强制 TDD、不强制 worktree、不强制 subagent，也不默认创建长期知识库。它优先解决 Codex 日常编码协作中的实际问题。
 
 ## 特性
 
-- 支持初始化空白或半成品编码 workspace。
-- 为已有项目补齐最小 `AGENTS.md`、`docs/`、`tasks/` 协作结构。
-- 支持 feature、bugfix、refactor、documentation、review 等任务分类。
-- 在修改代码前检查 Git 状态，保护用户已有改动。
-- 按任务复杂度生成轻量或完整的计划、步骤和结果记录。
-- 在实现后记录验证结果、剩余风险、任务状态和可复用经验候选。
-- 默认不创建长期知识库、自动化、子代理或额外目录，除非用户明确启用或批准。
+- Codex-first：围绕 Codex 编码任务、workspace、task package、resume work 和 verification 设计。
+- 模块化：根入口负责路由，子 skill 分别处理 bootstrap、task tracking、git safety 和 completion verification。
+- 低侵入：小改动保持小流程，不把简单任务变成重流程。
+- 可恢复：需要跟踪的任务使用 `tasks/YYYY/MM/T-.../` 记录目标、计划、步骤和结果。
+- 安全编辑：修改前检查 Git 状态，保护用户已有改动。
+- 完成前验证：能跑验证就跑；不能跑时记录原因和风险。
 
-## 适用场景
+## 适合场景
 
-- 希望 Codex 不只生成代码，而是按工程流程完成编码任务。
-- 希望每个任务都有可恢复的计划、进度和结果记录。
-- 希望在多人或多轮 Codex 会话中保留上下文。
-- 希望给现有项目补齐最小的 Codex 协作规范。
+- 希望 Codex 不只是生成代码，而是按工程流程完成编码任务。
+- 希望 feature、bugfix、refactor、documentation 任务有可恢复的记录。
+- 希望给空 workspace 或已有项目补齐最小 Codex 协作结构。
+- 希望 Codex 在汇报“完成”前有验证证据。
+
+## 不默认做的事
+
+- 不强制 TDD。
+- 不强制创建 git worktree。
+- 不强制使用 subagent。
+- 不默认创建长期 lessons、decisions、patterns 或 automations。
+- 不默认重构项目结构、移动目录或新增框架。
 
 ## 仓库结构
 
@@ -25,75 +34,88 @@
 .
 ├── codex-coding-workflow/
 │   ├── SKILL.md
-│   └── agents/
-│       └── openai.yaml
+│   ├── agents/
+│   │   └── openai.yaml
+│   └── skills/
+│       ├── coding-workflow/
+│       ├── workspace-bootstrap/
+│       ├── task-tracking/
+│       ├── git-safety/
+│       └── verification-before-done/
+├── tests/
+│   ├── check-skill-metadata.py
+│   └── prompts/
 ├── install.ps1
+├── install.sh
 ├── LICENSE
 └── README.md
 ```
 
+## Skill 模块
+
+| Skill | 作用 |
+|---|---|
+| `codex-coding-workflow` | 根入口，分类请求并选择轻量 workflow |
+| `coding-workflow` | 判断 request type、difficulty 和路由 |
+| `workspace-bootstrap` | 初始化空 workspace 或补齐最小协作结构 |
+| `task-tracking` | 创建/复用任务包，维护任务进度和结果 |
+| `git-safety` | 编辑前检查 Git 状态并保护用户改动 |
+| `verification-before-done` | 完成前运行验证或记录验证缺口 |
+
 ## 安装
 
-### 方式一：使用安装脚本
+### Unix-like shell
 
-Windows PowerShell：
+```sh
+./install.sh
+```
+
+指定 Codex skills 目录：
+
+```sh
+./install.sh "$HOME/.codex/skills"
+```
+
+### PowerShell
 
 ```powershell
 .\install.ps1
 ```
 
-默认安装到：
-
-```text
-%USERPROFILE%\.codex\skills\codex-coding-workflow
-```
-
-也可以指定安装目录：
+指定 Codex skills 根目录：
 
 ```powershell
-.\install.ps1 -Destination "$env:USERPROFILE\.codex\skills\codex-coding-workflow"
+.\install.ps1 -DestinationRoot "$env:USERPROFILE\.codex\skills"
 ```
 
-注意：如果目标目录已存在，安装脚本会先删除目标目录，再复制当前仓库中的 `codex-coding-workflow/`。
+旧参数 `-Destination` 仍可使用；它表示根入口 skill 的目标目录，子 skills 会安装到它的父目录。
 
-### 方式二：手动复制
+安装脚本会安装：
 
-```powershell
-$target = Join-Path $env:USERPROFILE ".codex\skills\codex-coding-workflow"
-New-Item -ItemType Directory -Force -Path (Split-Path $target) | Out-Null
-Copy-Item -Recurse -Force ".\codex-coding-workflow" $target
-```
+- 根入口：`codex-coding-workflow`
+- 子 skills：`coding-workflow`、`workspace-bootstrap`、`task-tracking`、`git-safety`、`verification-before-done`
 
 ## 使用方式
 
-安装后，可以在 Codex 提示词中显式调用：
+安装后，可以显式调用：
 
 ```text
-Use $codex-coding-workflow to initialize this workspace and implement the requested change.
+Use $codex-coding-workflow to classify this coding request, track the task if files change, protect existing changes, and verify before completion.
 ```
 
-也可以用更具体的任务描述：
+也可以针对具体场景调用子 skill：
 
 ```text
-Use $codex-coding-workflow to fix this bug, update the task records, and run the relevant verification.
+Use $workspace-bootstrap to add the smallest useful Codex collaboration structure.
 ```
 
-## 工作流概览
-
-该 skill 会指导 Codex 按以下顺序处理编码任务：
-
-1. 理解用户请求并判断任务类型。
-2. 检查 workspace 是否需要补齐协作结构。
-3. 检查 Git 状态并保护已有改动。
-4. 按任务复杂度创建或复用任务包。
-5. 编写计划、步骤、风险和验证方式。
-6. 执行实现并持续更新任务进度。
-7. 运行相关验证，或记录无法验证的原因。
-8. 更新任务结果，将状态标记为 `done`、`review` 或 `blocked`。
+```text
+Use $verification-before-done to check whether this work can be called complete.
+```
 
 ## 任务记录结构
 
-当项目需要任务跟踪时，skill 会使用类似结构：
+当任务需要跟踪时，使用：
 
 ```text
 tasks/
@@ -113,54 +135,43 @@ tasks/
             └── result.md
 ```
 
-复杂任务可能额外包含 `research.md`、`notes.md`、`screenshots/` 或 `examples/`。
+复杂任务可以额外包含 `research.md`，但不默认创建额外目录。
 
-## 设计原则
+## 测试
 
-- 小任务保持轻量，不引入不必要流程。
-- 优先遵循现有项目约定。
-- 默认只创建完成当前任务所需的最小文件。
-- 不擅自移动、重命名、重构或大范围格式化已有文件。
-- 不擅自提交、重置、变基、stash 或创建分支。
-- 不擅自新增依赖，除非当前任务确实需要。
-- 不擅自保存长期经验、决策、模式、模板、skill、subagent 或 automation。
+运行 metadata 检查：
 
-## 配置说明
+```sh
+python tests/check-skill-metadata.py
+```
 
-Codex 入口配置位于：
+测试 prompt 位于：
 
 ```text
-codex-coding-workflow/agents/openai.yaml
+tests/prompts/
 ```
 
-当前配置允许隐式调用：
+这些 prompt 用来人工或自动检查 Codex 是否应触发对应 skill，例如：
 
-```yaml
-policy:
-  allow_implicit_invocation: true
-```
+- bugfix 应触发 `task-tracking`、`git-safety`、`verification-before-done`
+- review-only 不应创建任务包
+- empty workspace 应触发 `workspace-bootstrap`
+- completion check 应触发 `verification-before-done`
 
-skill 主体说明位于：
+## 贡献建议
 
-```text
-codex-coding-workflow/SKILL.md
-```
+修改 skill 前建议检查：
+
+- `description` 是否只写触发条件，而不是总结完整流程。
+- 是否保持低侵入，不把小任务变重。
+- 是否保留任务包结构兼容性。
+- 是否为新增或修改的触发场景补充 `tests/prompts/`。
+- 是否通过 `python tests/check-skill-metadata.py`。
 
 ## 版本
 
-当前 skill 内容版本：`v0.2`。
-
-## 贡献
-
-欢迎通过 issue 或 pull request 改进这个 skill。
-
-建议提交前检查：
-
-- README 与 `SKILL.md` 描述是否一致。
-- 示例命令是否适用于 Windows PowerShell。
-- 是否避免加入与当前 skill 无关的目录、依赖或自动化。
-- 是否保持 workflow 低侵入、可追踪、可恢复。
+当前 skill 内容版本：`v0.3`。
 
 ## License
 
-本项目使用 MIT License，详见 [LICENSE](LICENSE)。
+MIT License，详见 [LICENSE](LICENSE)。
