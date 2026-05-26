@@ -11,10 +11,45 @@
 ## 特性
 
 - 强触发词：描述中包含真实使用短语，如 `实施计划`、`按计划执行`、`开始编码`。
-- 单一职责：主 skill 直接定义 plan-to-tasks 执行闭环，不再拆成多个 competing child skills。
+- 单一职责：主 skill 直接定义三段能力，不再拆成多个 competing child skills。
 - 最小工作目录：需要初始化时只补齐 `AGENTS.md`、`docs/`、`tasks/` 的最小有用结构。
 - 任务可恢复：使用 `tasks/YYYY/MM/T-.../` 记录目标、计划、步骤、结果和验证。
 - 完成后沉淀：从本次对话提炼 learning candidates，默认只写入当前 `result.md`，长期写入必须经用户批准。
+
+## 三段能力强化
+
+### 1. 工作目录初始化
+
+适用于空项目、基础项目或缺少 Codex 协作文件的项目。
+
+执行要求：
+
+- 先检查现有文件，再创建协作文件。
+- 保留项目已有框架、目录、包管理器和命名方式。
+- 只补齐当前有用的最小协作结构。
+- 未识别出的命令写成 `Not identified yet`，不猜测。
+
+### 2. 计划落地为任务
+
+适用于用户要求实施、执行、继续或恢复编码任务。
+
+执行要求：
+
+- 编辑项目文件前必须创建或复用 `tasks/...` 任务包。
+- 将已接受计划写入或摘要到 `plan.md`。
+- 将计划拆成可执行 checklist 写入 `tasks.md`。
+- 小任务可以短记录，但不能跳过记录。
+
+### 3. 完成后沉淀
+
+适用于 tracked implementation work 的最终回复前。
+
+执行要求：
+
+- 检查实际 diff 或变更文件。
+- 运行最相关的可用验证。
+- 在 `result.md` 记录变更、完成项、验证、风险和 learning candidates。
+- 未经用户批准，不写入长期规则、项目记忆或其他 skill。
 
 ## 适合场景
 
@@ -165,6 +200,7 @@ tests/prompts/
 - plan-only 不应创建任务包。
 - review-only 不应创建任务包。
 - empty workspace 应触发最小工作目录初始化。
+- resume/completion check 应先检查现有 `tasks/` 状态。
 
 ## 后续方向
 
@@ -184,7 +220,7 @@ plugin = skill + hook 的发行包
 
 ## 版本
 
-当前 skill 内容版本：`v0.4`。
+当前 skill 内容版本：`v0.5`。
 
 ## License
 
