@@ -62,7 +62,28 @@
 | `git-safety` | 编辑前检查 Git 状态并保护用户改动 |
 | `verification-before-done` | 完成前运行验证或记录验证缺口 |
 
+## Available Skills
+
+| Skill | Trigger | Creates files? | Verification required? |
+|---|---|---:|---:|
+| `codex-coding-workflow` | Codex 处理编码任务、恢复任务或完成检查 | No | Depends on routed task |
+| `coding-workflow` | 需要分类请求、判断轻重、选择子流程 | No | No |
+| `workspace-bootstrap` | 初始化空 workspace 或补齐最小协作结构 | Yes | Yes, if files change |
+| `task-tracking` | 修改项目文件、恢复任务、更新任务包 | Yes | Yes, before `done` |
+| `git-safety` | 编辑、移动、删除、格式化或生成项目文件前 | No | No, but diff review is expected |
+| `verification-before-done` | 准备声明 done/fixed/passing/ready 时 | No | Yes |
+
 ## 安装
+
+## Installation Matrix
+
+| Method | Target | Status | Notes |
+|---|---|---|---|
+| `./install.sh` | `~/.codex/skills` by default | Supported | Installs root and child skills |
+| `.\install.ps1` | `%USERPROFILE%\.codex\skills` by default | Supported | Keeps backward-compatible `-Destination` |
+| Manual copy | Any Codex skills directory | Supported | Copy root and child skill directories |
+| `~/.agents/skills` | Universal Agent Skills path | Planned compatibility | Useful for tools that read the shared agent skills path |
+| skills CLI / marketplace | Package distribution | Future direction | Not required for this repo today |
 
 ### Unix-like shell
 
@@ -94,6 +115,22 @@
 
 - 根入口：`codex-coding-workflow`
 - 子 skills：`coding-workflow`、`workspace-bootstrap`、`task-tracking`、`git-safety`、`verification-before-done`
+
+### Codex / Agent Skills 路径
+
+当前脚本默认面向 Codex skills 目录：
+
+```text
+~/.codex/skills
+```
+
+一些 Agent Skills 生态工具使用通用路径：
+
+```text
+~/.agents/skills
+```
+
+本仓库的 `SKILL.md` 结构兼容通用 Agent Skills 格式，但默认安装仍保持 Codex-first。需要通用路径时，可以把安装目标显式传给 `install.sh` 或 `install.ps1`。
 
 ## 使用方式
 
@@ -158,11 +195,21 @@ tests/prompts/
 - empty workspace 应触发 `workspace-bootstrap`
 - completion check 应触发 `verification-before-done`
 
+## 维护契约
+
+每个子 skill 都包含一个 `SPEC.md`：
+
+- `SKILL.md`：运行时指令，给 Codex 在任务中读取。
+- `SPEC.md`：维护契约，给维护者或后续 agent 修改 skill 时读取。
+
+`SPEC.md` 记录目标、触发条件、非目标、测试 prompt 和维护注意事项。修改子 skill 行为时，应同步更新对应 `SPEC.md` 和 `tests/prompts/`。
+
 ## 贡献建议
 
 修改 skill 前建议检查：
 
 - `description` 是否只写触发条件，而不是总结完整流程。
+- 子 skill 目录名是否和 frontmatter `name` 一致。
 - 是否保持低侵入，不把小任务变重。
 - 是否保留任务包结构兼容性。
 - 是否为新增或修改的触发场景补充 `tests/prompts/`。

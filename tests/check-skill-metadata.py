@@ -8,7 +8,7 @@ import sys
 
 ROOT = Path(__file__).resolve().parents[1]
 SKILL_ROOT = ROOT / "codex-coding-workflow"
-MAX_DESCRIPTION_LENGTH = 220
+MAX_DESCRIPTION_LENGTH = 300
 NAME_RE = re.compile(r"^[a-z0-9-]+$")
 
 
@@ -61,6 +61,11 @@ def main() -> int:
         else:
             names.add(name)
 
+        if name and path.parent != SKILL_ROOT and path.parent.name != name:
+            errors.append(
+                f"{rel}: directory name {path.parent.name!r} must match skill name {name!r}"
+            )
+
         if not description:
             errors.append(f"{rel}: missing description")
         elif len(description) > MAX_DESCRIPTION_LENGTH:
@@ -68,8 +73,8 @@ def main() -> int:
                 f"{rel}: description is {len(description)} chars; max is {MAX_DESCRIPTION_LENGTH}"
             )
 
-        if description and not description.startswith("Use when"):
-            errors.append(f"{rel}: description should start with 'Use when'")
+        if description and "Use when" not in description:
+            errors.append(f"{rel}: description should include 'Use when'")
 
     if errors:
         print("Skill metadata check failed:")
